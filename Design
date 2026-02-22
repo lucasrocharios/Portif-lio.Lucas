@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Portfolio | Lucas Rocha Rios</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Estilos de Animação (Trazidos do React) -->
+    <style>
+        @keyframes scanDownWrapper {
+            0% { transform: translateY(-10%); opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { transform: translateY(110%); opacity: 0; }
+        }
+        @keyframes subtleColorCycle {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        @keyframes marqueeLeft { 
+            0% { transform: translateX(0); } 
+            100% { transform: translateX(-50%); } 
+        } 
+        @keyframes marqueeRight { 
+            0% { transform: translateX(-50%); } 
+            100% { transform: translateX(0); } 
+        } 
+        .animate-marquee-left-seamless { animation: marqueeLeft 45s linear infinite; } 
+        .animate-marquee-right-seamless { animation: marqueeRight 45s linear infinite; } 
+        
+        /* Modificadores para a View de Projeto Primário */
+        .project-marquee-left { animation: marqueeLeft 35s linear infinite; }
+        
+        @keyframes scrollVerticalUp { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+        @keyframes scrollVerticalDown { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+        .animate-scroll-up { animation: scrollVerticalUp 80s linear infinite; }
+        .animate-scroll-down { animation: scrollVerticalDown 80s linear infinite; }
+        
+        .pause-on-hover:hover .animate-marquee-left-seamless, 
+        .pause-on-hover:hover .animate-marquee-right-seamless,
+        .pause-on-hover:hover .project-marquee-left,
+        .pause-on-hover:hover .animate-scroll-up, 
+        .pause-on-hover:hover .animate-scroll-down { 
+            animation-play-state: paused; 
+        }
+
+        /* Classe auxiliar para o FadeInSection */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(4rem);
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            transition-duration: 1000ms;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-[100svh] bg-blue-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
+
+    <!-- LIGHTBOX (Fullscreen Image) -->
+    <div id="lightbox" class="hidden fixed inset-0 z-[999] bg-slate-900/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out duration-300 transition-opacity opacity-0" onclick="closeLightbox()">
+        <button class="absolute top-4 md:top-8 right-4 md:right-8 text-white/50 hover:text-white transition-colors bg-white/10 p-3 md:p-4 rounded-full z-50" onclick="closeLightbox()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <img id="lightbox-img" src="" class="max-w-[95vw] max-h-[90vh] object-contain rounded-2xl md:rounded-3xl shadow-2xl duration-300 transform scale-95 transition-transform" alt="Fullscreen" onerror="handleImageError(event)" />
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app">
+        
+        <!-- ========================================== -->
+        <!-- VIEW: PROJECT DETAILS (Inicia Oculta)      -->
+        <!-- ========================================== -->
+        <div id="project-view" class="hidden min-h-[100svh] pt-8 pb-24 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] 2xl:max-w-[1800px] mx-auto space-y-8 md:space-y-12">
+            <!-- Conteúdo injetado via JavaScript -->
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: HOME (Inicia Visível)                -->
+        <!-- ========================================== -->
+        <div id="home-view">
+            <!-- Hero Section -->
+            <section class="relative min-h-[100svh] flex flex-col p-4 sm:p-6 lg:p-8 overflow-hidden">
+                <div class="absolute top-[-10%] left-[-10%] w-[60vw] md:w-[40vw] h-[60vw] md:h-[40vw] bg-blue-200/40 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] md:w-[40vw] h-[60vw] md:h-[40vw] bg-white rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="fade-in-section flex-1 w-full flex flex-col max-w-[1600px] 2xl:max-w-[1800px] mx-auto">
+                    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col w-full flex-1 relative z-10 text-center">
+                        <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                            <div class="flex space-x-2.5">
+                                <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div>
+                                <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div>
+                                <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-28 flex-1 relative flex flex-col items-center justify-center">
+                            <div class="flex-1 flex flex-col items-center justify-center space-y-6 md:space-y-8">
+                                <span class="text-blue-600 font-bold tracking-widest uppercase text-[10px] sm:text-xs md:text-sm mb-2 bg-blue-50 px-4 py-2 rounded-full">Portfolio / Lucas Rocha Rios</span>
+                                <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl 2xl:text-[10rem] font-black text-slate-900 tracking-tighter flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6">
+                                    <span>PÁGINA</span>
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">DESIGN</span>
+                                </h1>
+                                <h2 class="max-w-5xl 2xl:max-w-6xl text-slate-500 text-lg sm:text-xl md:text-2xl 2xl:text-3xl mt-6 sm:mt-8 leading-[1.6] md:leading-[1.8]">Uma curadoria meticulosa de soluções visuais com propósito. Explore este acervo onde o design estratégico ganha status de obra de arte.</h2>
+                            </div>
+                            <div class="flex justify-center mt-auto pt-8 sm:pt-10">
+                                <div class="animate-bounce bg-blue-50 p-4 md:p-5 rounded-full text-blue-600 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="md:w-7 md:h-7"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sobre Mim -->
+            <section class="pt-16 md:pt-24 pb-12 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] 2xl:max-w-[1800px] mx-auto">
+                <div class="fade-in-section">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 2xl:gap-20 items-stretch">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col w-full aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full group">
+                            <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                                <div class="flex space-x-2.5">
+                                    <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="p-0 flex-1 relative overflow-hidden" id="profile-pic-container">
+                                <!-- Preenchido por JS -->
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col h-full">
+                            <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                                <div class="flex space-x-2.5">
+                                    <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-16 2xl:p-24 flex-1 relative">
+                                <div class="space-y-6 md:space-y-10 relative">
+                                    <div><h2 class="text-3xl md:text-5xl 2xl:text-6xl font-black text-slate-900 mb-2 md:mb-4 tracking-tight">SOBRE MIM</h2><h3 class="text-xl md:text-2xl 2xl:text-3xl text-blue-600 font-bold uppercase tracking-wider">Lucas Rocha Rios</h3></div>
+                                    <div class="space-y-4 md:space-y-6 text-slate-600 text-lg md:text-2xl 2xl:text-3xl leading-[1.7] md:leading-[1.9]">
+                                        <p>Sou Lucas, um designer com 3 anos de experiência focados em aliar estética à estratégia e resultados.</p>
+                                        <p>Minha trajetória inclui a criação de campanhas institucionais no marketing da Fadminas e a execução de projetos ágeis e focados em performance na agência digital Digma.</p>
+                                        <p>Meu trabalho se apoia em dois pilares: clareza para comunicar com eficiência, e impacto para conectar marcas ao seu público. Para mim, o design não é apenas visual — é uma ferramenta para resolver problemas e gerar valor real.</p>
+                                    </div>
+                                    <div class="pt-8 md:pt-10 border-t border-slate-200">
+                                        <h4 class="font-black text-slate-900 mb-4 md:mb-6 uppercase text-xs md:text-sm tracking-widest">Conecte-se:</h4>
+                                        <div class="flex flex-col gap-4 md:gap-5">
+                                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lurocharios@gmail.com" target="_blank" class="flex items-center text-slate-600 hover:text-blue-600 transition-colors font-medium text-base md:text-lg 2xl:text-xl break-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> 
+                                                lurocharios@gmail.com
+                                            </a>
+                                            <a href="https://instagram.com/RioslucasRocha" target="_blank" rel="noreferrer" class="flex items-center text-slate-600 hover:text-blue-600 transition-colors font-medium text-base md:text-lg 2xl:text-xl break-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg> 
+                                                @RioslucasRocha
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Habilidades -->
+            <section class="pt-8 md:pt-12 pb-12 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] 2xl:max-w-[1800px] mx-auto">
+                <div class="fade-in-section">
+                    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                        <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                            <div class="flex space-x-2.5">
+                                <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-24 flex-1 relative">
+                            <div class="space-y-8 md:space-y-10">
+                                <div>
+                                    <h2 class="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-black text-slate-900 mb-4 tracking-tight">HABILIDADES & FERRAMENTAS</h2>
+                                    <p class="text-slate-600 text-base md:text-xl 2xl:text-2xl">Um resumo das minhas principais competências técnicas e ferramentas de trabalho diário.</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 pt-8 border-t border-slate-100">
+                                    <div>
+                                        <h3 class="text-xs md:text-sm 2xl:text-base font-bold text-slate-400 uppercase tracking-widest mb-4 md:mb-5 flex items-center">
+                                            <span class="w-6 md:w-8 h-[1px] bg-blue-200 mr-3"></span> Perícias
+                                        </h3>
+                                        <div class="flex flex-wrap gap-2 md:gap-3" id="skills-list">
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-blue-50 text-blue-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-blue-100 shadow-sm hover:bg-blue-100 transition-colors cursor-default">Design Editorial</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-blue-50 text-blue-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-blue-100 shadow-sm hover:bg-blue-100 transition-colors cursor-default">Mídias Sociais</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-blue-50 text-blue-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-blue-100 shadow-sm hover:bg-blue-100 transition-colors cursor-default">Branding</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-blue-50 text-blue-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-blue-100 shadow-sm hover:bg-blue-100 transition-colors cursor-default">Motion Design</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xs md:text-sm 2xl:text-base font-bold text-slate-400 uppercase tracking-widest mb-4 md:mb-5 flex items-center">
+                                            <span class="w-6 md:w-8 h-[1px] bg-slate-200 mr-3"></span> Softwares
+                                        </h3>
+                                        <div class="flex flex-wrap gap-2 md:gap-3">
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 text-slate-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-slate-200 shadow-sm hover:bg-slate-100 transition-colors cursor-default">Photoshop</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 text-slate-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-slate-200 shadow-sm hover:bg-slate-100 transition-colors cursor-default">Illustrator</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 text-slate-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-slate-200 shadow-sm hover:bg-slate-100 transition-colors cursor-default">InDesign</span>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 bg-slate-50 text-slate-700 font-bold rounded-full text-xs md:text-sm 2xl:text-base border border-slate-200 shadow-sm hover:bg-slate-100 transition-colors cursor-default">After Effects</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projetos em Destaque -->
+            <section class="pt-8 md:pt-16 pb-16 px-4 sm:px-6 lg:px-8 w-full max-w-[1600px] 2xl:max-w-[1800px] mx-auto">
+                <div class="space-y-12 md:space-y-16 2xl:space-y-24">
+                    
+                    <!-- Revista PG -->
+                    <div class="fade-in-section">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col group">
+                            <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                                <div class="flex space-x-2.5">
+                                    <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-16 2xl:p-24 flex-1 relative">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                                    <div class="order-2 lg:order-1 space-y-6 md:space-y-8">
+                                        <div class="inline-block px-3 md:px-4 py-1.5 md:py-2 bg-blue-100 text-blue-700 font-bold text-xs md:text-sm rounded-full">Editorial & Branding</div>
+                                        <h3 class="text-3xl sm:text-4xl 2xl:text-5xl font-black text-slate-900 tracking-tight">Revista PG</h3>
+                                        <p class="text-slate-600 text-base sm:text-lg md:text-xl 2xl:text-2xl leading-[1.6] md:leading-[1.7]">Projeto editorial desenvolvido para a Associação Brasil Central. O desafio foi criar uma comunicação moderna e leve para um público misto, respeitando a identidade adventista. Superando obstáculos técnicos e de coordenação à distância, a revista entregou um design equilibrado e inovador, gerando grande repercussão e sucesso no evento em Goiânia.</p>
+                                        <button onclick="openProject('bluebank')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-blue-600 text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-blue-700 transition-all transform hover:-translate-y-1 mt-2 md:mt-4 shadow-lg shadow-blue-600/10 text-sm md:text-base">
+                                            <span>Detalhes do Projeto</span>
+                                        </button>
+                                    </div>
+                                    <div class="order-1 lg:order-2 relative min-h-[300px] sm:min-h-[400px] lg:min-h-0 lg:h-full w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-zoom-in" id="revista-pg-img-container">
+                                        <!-- Renderizado via JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spectro -->
+                    <div class="fade-in-section" style="transition-delay: 100ms;">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col group">
+                            <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                                <div class="flex space-x-2.5">
+                                    <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-16 2xl:p-24 flex-1 relative">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                                    <div class="relative min-h-[300px] sm:min-h-[400px] lg:min-h-0 lg:h-full w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-zoom-in" id="spectro-img-container">
+                                        <!-- Renderizado via JS -->
+                                    </div>
+                                    <div class="space-y-6 md:space-y-8">
+                                        <div class="inline-block px-3 md:px-4 py-1.5 md:py-2 bg-blue-100 text-blue-700 font-bold text-xs md:text-sm rounded-full">Identity Design</div>
+                                        <h3 class="text-3xl sm:text-4xl 2xl:text-5xl font-black text-slate-900 tracking-tight">SPECTRO</h3>
+                                        <p class="text-slate-600 text-base sm:text-lg md:text-xl 2xl:text-2xl leading-[1.6] md:leading-[1.7]">Projeto de branding completo para a Spectro, uma marca que une cultura geek e design autoral contemporâneo. O desafio foi criar uma identidade versátil e memorável, transformando as peças em itens de coleção. O resultado final, validado por pesquisa qualitativa, confirmou a excelente aceitação em diferentes públicos, atingindo o equilíbrio ideal entre estilo, clareza e apelo universal.</p>
+                                        <button onclick="openProject('neo')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-blue-600 text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-blue-700 transition-all transform hover:-translate-y-1 mt-2 md:mt-4 shadow-lg shadow-blue-600/10 text-sm md:text-base">
+                                            <span>Explorar Branding</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Boutiquey -->
+                    <div class="fade-in-section" style="transition-delay: 200ms;">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col group">
+                            <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                                <div class="flex space-x-2.5">
+                                    <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-16 2xl:p-24 flex-1 relative">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                                    <div class="order-2 lg:order-1 space-y-6 md:space-y-8">
+                                        <div class="inline-block px-3 md:px-4 py-1.5 md:py-2 bg-blue-100 text-blue-700 font-bold text-xs md:text-sm rounded-full">Premium Branding</div>
+                                        <h3 class="text-3xl sm:text-4xl 2xl:text-5xl font-black text-slate-900 tracking-tight">BOUTIQUEY</h3>
+                                        <p class="text-slate-600 text-base sm:text-lg md:text-xl 2xl:text-2xl leading-[1.6] md:leading-[1.7]">Projeto de reposicionamento de marca com foco no mercado de luxo. O desafio foi modernizar a identidade visual mantendo o ícone da borboleta, traduzindo elegância e exclusividade para um público de alto poder aquisitivo. O resultado alcançou um equilíbrio perfeito entre sofisticação e modernidade, sendo amplamente elogiado pela sua coesão visual e atenção aos detalhes durante a sua apresentação oficial.</p>
+                                        <button onclick="openProject('vibe')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-blue-600 text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-blue-700 transition-all transform hover:-translate-y-1 mt-2 md:mt-4 shadow-lg shadow-blue-600/10 text-sm md:text-base">
+                                            <span>Ver Estudo de Caso</span>
+                                        </button>
+                                    </div>
+                                    <div class="order-1 lg:order-2 relative min-h-[300px] sm:min-h-[400px] lg:min-h-0 lg:h-full w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-zoom-in" id="boutiquey-img-container">
+                                         <!-- Renderizado via JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Carrossel de Outros Projetos -->
+            <div class="fade-in-section" style="transition-delay: 300ms;">
+                <div class="w-full max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+                    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                        <div class="bg-slate-50/80 px-6 md:px-8 py-4 md:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                            <div class="flex space-x-2.5">
+                                <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-red-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-green-400"></div>
+                            </div>
+                        </div>
+                        <div class="pt-8 md:pt-14 lg:pt-20 px-0 pb-12 flex-1 relative">
+                            <div class="mb-10 md:mb-12 px-6 sm:px-8 md:px-14 lg:px-20">
+                                <h3 class="text-3xl sm:text-4xl 2xl:text-5xl font-black text-slate-900 mb-3 md:mb-4 tracking-tight">Outros Projetos</h3>
+                                <p class="text-slate-500 text-base md:text-xl 2xl:text-2xl">Clique nos cards para entender o raciocínio técnico por trás de cada visual.</p>
+                            </div>
+                            <div class="flex flex-col gap-6 md:gap-10 pause-on-hover overflow-hidden">
+                                <div class="flex animate-marquee-left-seamless" id="carousel-row-1">
+                                    <!-- Renderizado via JS -->
+                                </div>
+                                <div class="flex animate-marquee-right-seamless" id="carousel-row-2">
+                                     <!-- Renderizado via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="pt-8 md:pt-16 pb-24 md:pb-32 px-4 sm:px-6 lg:px-8 bg-white">
+                <div class="max-w-[1600px] mx-auto">
+                    <div class="fade-in-section">
+                        <div class="bg-blue-50/50 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden flex flex-col text-center py-16 md:py-24 border-none shadow-none max-w-5xl mx-auto">
+                            <div class="p-6 md:p-14 lg:p-20 flex-1 relative">
+                                <h2 class="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 mb-6 md:mb-10 uppercase tracking-tighter">Let's Connect</h2>
+                                <p class="text-slate-600 text-lg md:text-xl 2xl:text-2xl max-w-lg mx-auto mb-10 md:mb-16 leading-[1.6] md:leading-[1.7]">Disponível para novos projetos estratégicos e parcerias criativas.</p>
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lurocharios@gmail.com" target="_blank" class="inline-block bg-blue-600 text-white font-bold px-8 md:px-12 py-4 md:py-6 rounded-full hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-600/20 text-base md:text-lg">Falar com Lucas</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-12 md:mt-16 text-slate-400 text-xs md:text-sm font-bold tracking-widest uppercase opacity-60" id="copyright-year"></div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL: Dados e Lógica -->
+    <script>
+        // --- HELPER DE DADOS ---
+        const getDriveUrl = (id) => `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
+
+        const profilePic = getDriveUrl("17n1Y8SgIFTHycAVButXWLbMVtfyQu6hX");
+        const revistaPgImages = [
+            getDriveUrl("1GawskejfRzGAPDfWPKlFNg3aoMYKtGdv"), getDriveUrl("1zFKllx0J_pWRKoqjGoHlrDPXksPcKm-w"),
+            getDriveUrl("1ClEIjo9wISJ4KnFMld4i34pf-XGkmh1i"), getDriveUrl("18SnHPvFyV8apOFK54kzmmMjawdoBKsms"),
+            getDriveUrl("1VyFM2SYUnqWYsvTNu8mu1zpDptjruabj")
+        ];
+        const spectroHomeImg = getDriveUrl("1IhXNaiD9pZ18va8O19VOjrPZrPv4Lyov"); 
+        const spectroDetailImg = getDriveUrl("1l-VFi8wEJ5u8vNFbyDkhRmhEyV5zLbFg"); 
+        const boutiqueyHeroImg = getDriveUrl("1SsZfv5SqLMubA-xbLN37DDR5Qvshlaqy");
+        const boutiqueyDetailHeroImg = getDriveUrl("1yfIhmJmIgNpfUmDunIGdEG_DsjWanypt");
+        
+        const boutiqueyGallery = [
+            getDriveUrl("10mOam6D5ChwziB0dzILNB7UBIt8111xT"), getDriveUrl("1jcD9c-hfytTvFw63x1aFrGhjrAE6YzHJ"),
+            getDriveUrl("1pQjxibzOGWpN23f5tHFsm0NIl__uXEqp"), getDriveUrl("12MekiIA1TSaBfknpwRkYb1RZHqiISVS1"),
+            getDriveUrl("1ml4YT3Ctreb_NdmXEHsUQzFYyR5_W2Ab"), getDriveUrl("1jaFX5SYU7qV-yEkY0tPfusrC9WsM7_LX")
+        ];
+        const minhaFaunaGallery = [
+            getDriveUrl("1ynnYxv2mQb08zbEzjdOosspwfetu9c6k"), getDriveUrl("1H8S4wRNDJPPEjPhQ_eqjhNB-24cL-vbh"),
+            getDriveUrl("17HYMbUIZ4q0zSsarLBg7a_LsNmjWY34u"), getDriveUrl("1h01q3N6x8W5Lr3s6LidGHkYNgM5A67pE"),
+            getDriveUrl("1lbpC_Zxe0femCzxFpzxXBYQ2hiRxx5UC"), getDriveUrl("1uKunqywMPzR7TdcCTAw-b6ZHaSRD5z1l"),
+            getDriveUrl("1VHYW5ZNUugWdMl3J3wqMMidNZD3Xa0C3"), getDriveUrl("1uuSgRZee8bKvGH9dsP75YORlkUAi5dn4"),
+            getDriveUrl("1tqAqMjgcT0cA1so_mby7wNgbuS6mUqIg"), getDriveUrl("1WSMjYAfq4oUXG1j4qy9JRBFKC-BsHBzh"),
+            getDriveUrl("1lbZIY85hqJWd4lRyP-Wu_D5F-9iB1CfY"), getDriveUrl("1A9d6kc5r7ZmheqFunkq3CQQpOAR8Df9J")
+        ];
+        const timeRushGallery = [
+            getDriveUrl("158gma2oWZWIyJm0TSfRJofMGVDVQl-V_"), getDriveUrl("1CpCF82vq-7Dk4ZuwF_yewjv79JlDghj8"),
+            getDriveUrl("1VX1ZnR_4rRsX6_nOXrfLzeMnV5xIfDTU"), getDriveUrl("13msfPrTzcQqnruldxgFwDEgBK4OrE5VQ"),
+            getDriveUrl("1jA3LOziYPOV1uGfxeo_zCvmSn0u_NGgt"), getDriveUrl("1H4HOpYa_ZReATZB_QlU98LESMP0pux20"),
+            getDriveUrl("15kRI3zpBXgsaCOnPjnAwNyjydDBs_srP"), getDriveUrl("1g5Qib3RpSEiNPwKjujruddOumyPfZvx9"),
+            getDriveUrl("1G4Uyy5pula9SkTyi7ei7zJlntSPW-fYm"), getDriveUrl("1Ko6S61_B1WmSF_u02Ng47AFtZ263pDti"),
+            getDriveUrl("1tT8WOLBywnQ3w-jSWevWG9U1xYO7O0QV"), getDriveUrl("1yte2Z2rFgajo1JaNbLFFI7_uiA34q5Z4"),
+            getDriveUrl("1HfJzwxj1yzSDiEdOdOyskWwysMlzwGcI")
+        ];
+        const diagramacoesGallery = [
+            getDriveUrl("1Lk17Vr4VnVwIQv2r55sRP3uinB0NFEGB"), getDriveUrl("1oC8uzukoT0-IOWrh096rmxCeFOjErcNh"),
+            getDriveUrl("1xkVmX63wHjs102YVAKpduGmttnIgdxn9"), getDriveUrl("1cOwZPoqM8aPVsOjoSvDNrAvqqu0D741B"),
+            getDriveUrl("1ob7dQYkUbL7dEUCzRgWj__YgDRWAVjxz"), getDriveUrl("1WRVpZhd6aJq7ewnNdmjjscmfKxrBQ15R")
+        ];
+        const bannersGallery = [
+            getDriveUrl("1ShfpzTTJStilXkLFn6BQeEz4DfWkKeu8"), getDriveUrl("14KfO4bhkL3gWeuaElvlFLJJza5ItxXc0"),
+            getDriveUrl("1UPVKDAYsyKJgTY5vOTXUgX3nQApdsgEO"), getDriveUrl("1-HBlVn_0QXdZuT1OdYbh_i0_PkqNFNuW")
+        ];
+
+        const projectsData = {
+            bluebank: {
+                title: "Revista PG", category: "Diagramação & Editorial", heroImg: revistaPgImages[0], role: "Design Artístico", timeline: "2 Semanas",
+                briefing: "O projeto nasceu a partir de um convite do pastor Wesley, secretário da Associação Brasil Central, para ser o responsável pela diagramação de uma revista voltada aos pequenos grupos. O material seria utilizado em um evento que aconteceria em Goiânia, com o desafio de alcançar um público misto, composto por jovens e adultos jovens.\n\nDesde o início, o foco principal foi garantir uma comunicação leve e acessível, mantendo a identidade tradicional das revistas adventistas. Ao longo do processo, realizamos três a quatro reuniões com os responsáveis pela revisão e conteúdo, procurando alinhar cada detalhe visual e textual. Além de manter o padrão institucional, o projeto também precisava trazer toques de criação e inovação, sem perder a coerência com os princípios da igreja.\n\nEntre as limitações enfrentadas, destacaram-se a qualidade variável das imagens e a necessidade de filtrar fotos que continham elementos ou acessórios incompatíveis com os valores adventistas. Apesar desses desafios, o resultado final foi uma revista equilibrada.",
+                challenges: "Durante o desenvolvimento do projeto, o principal desafio foi o contato à distância, já que eu estava a cerca de 15 horas de viagem do cliente. Precisávamos conciliar os horários para realizar reuniões produtivas e manter o alinhamento do projeto. Além disso, surgiram problemas técnicos na diagramação, como falhas na fonte e despadronização de espaçamentos, que exigiam revisões constantes. Esses obstáculos tornaram o processo mais demorado, mas também fortaleceram minha atenção aos detalhes e capacidade de adaptação.",
+                solution: "Com o prazo cada vez mais apertado, encontramos soluções práticas para manter o projeto dentro do cronograma. Passamos a realizar reuniões diárias entre 18h e 19h, com compartilhamento de tela, o que permitiu corrigir os problemas da revista com muito mais precisão e agilidade. Além disso, foram incluídos dois novos revisores: um colaborando diretamente na diagramação, oferecendo apoio técnico e visual, e outro focado na revisão textual, ajustando erros de português e informalidades. Essas medidas tornaram o fluxo mais eficiente e garantiram que a revista fosse entregue dentro do prazo, com qualidade e alinhamento ao propósito do cliente.",
+                result: "O resultado final foi extremamente positivo. A revista foi divulgada com sucesso e apresentada durante o evento, que teve grande repercussão entre os participantes. Ver o projeto concluído e sendo utilizado por tantos grupos foi uma experiência profissional e pessoalmente gratificante. A revista alcançou o equilíbrio ideal entre design moderno e clareza visual, agradando tanto o público mais jovem quanto os adultos. O processo, apesar dos desafios técnicos e da distância, proporcionou um aprendizado profundo sobre gestão de tempo, revisão e colaboração à distância. Cada detalhe ajustado em equipe refletiu na qualidade do resultado final, que superou as expectativas iniciais. Foi uma experiência inexplicavelmente enriquecedora e satisfatória.",
+                gallery: revistaPgImages, isSecondary: false
+            },
+            neo: {
+                title: "SPECTRO", category: "Branding", heroImg: spectroDetailImg, role: "Branding developer", timeline: "3 Semanas",
+                briefing: "A Espectro foi criada por um grupo de três jovens com o sonho de lançar uma loja de camisetas com estampas personalizadas, voltada tanto para o público da cultura geek quanto para pessoas que apreciam design criativo, mas fora desse universo. O objetivo era transformar cada peça em um item de coleção, unindo estilo, referência cultural e identidade própria.\n\nO nome Espectro surgiu da ideia de algo versátil e icônico — uma referência a figuras marcantes do cinema, como em Caça-fantasmas, e ao mesmo tempo um símbolo de modernidade digital, refletindo a força do entretenimento online e a presença da marca em uma loja virtual.\n\nCom essa visão, fui convidado a desenvolver o branding completo da marca, criando uma identidade que transmitisse essa fusão entre o mundo geek e o digital de forma autêntica e memorável.",
+                challenges: "O maior desafio no início foi encontrar uma referência visual adequada para criar o ícone da marca, que deveria ser chamativo e de fácil identificação. Normalmente, o desenvolvimento de um logotipo parte da persona e do tom de voz da empresa, mas nesse caso, havia uma complexidade extra: o símbolo sería um fantasma, figura que costuma remeter ao medo. No entanto, a intenção da Spectro não era transmitir terror, e sim a ideia de quebrar barreiras e se destacar de forma positiva. Por isso, busquei formas de representar o fantasma de modo amigável e acolhedor, equilibrando simplicidade, carisma e uma estética que comunicasse leveza e conexão com o público.",
+                solution: "A principal solução encontrada foi trabalhar com formas arredondadas, inspiradas nas espirais de Fibonacci, um elemento presente na natureza e conhecido por transmitir equilíbrio e harmonia visual. Essa escolha traz à identidade da Spectro uma sensação de tranquilidade e conforto, tornando o design agradável aos olhos e acolhedor. Assim, desenvolvi um fantasminha com contornos suaves e proporções baseadas na espiral, criando uma conexão natural entre o símbolo e o conceito da marca. Dessa forma, a Espiral passou a fazer parte da identidade visual da empresa, reforçando sua essência criativa, moderna e acessível.",
+                result: "Após concluirmos o processo de branding, realizamos uma pesquisa qualitativa para validar o resultado. Elaboramos questionários e entrevistamos tanto pessoas ligadas ao universo geek quanto pessoas que não estão familiarizadas com ele, buscando entender se a identidade da marca conseguia se comunicar bem e chegar a ambos os públicos. Durante o teste, também apresentamos as camisetas personalizadas desenvolvidas para a marca e perguntamos se os participantes gostariam de utilizá-las. O resultado foi muito positivo: a maioria dos entrevistados aprovou o design e afirmou que usaria as peças, confirmando que a identidade visual atingiu o equilíbrio ideal entre estilo, clareza e apelo universal.",
+                gallery: [ getDriveUrl("12vbNnJ04Wk3uGNnHbXUI2dp1MqxVkUd5"), getDriveUrl("1Hxejvy6AQ-Tr3cl-rKH3YFRZ-ZGExhFw"), getDriveUrl("1ImLckup_qOIHER7-g-NcpOk_QJuRRfcv"), getDriveUrl("1zETots52a17YUHyqlJjMl2Qw2hU--tSk"), getDriveUrl("1SLtN0-byLTKXU9iRf5dhBGbo-j28XHkH") ],
+                isSecondary: false
+            },
+            vibe: {
+                title: "BOUTIQUEY", category: "Branding", heroImg: boutiqueyDetailHeroImg, role: "Branding developer", timeline: "1 Semana",
+                briefing: "O projeto da Boutiquey surgiu como uma atividade acadêmica, onde a proposta era simular o trabalho completo de uma agência — desde o atendimento ao cliente até a criação das estratégias de marca.\n\nA cliente desejava uma nova identidade visual que mantivesse o ícone da borboleta, já presente na antiga marca, mas com uma estética mais luxuosa e sofisticada, condizente com o perfil do público-alvo, composto por pessoas de poder aquisitivo mais elevado.\n\nEmbora o projeto envolvesse várias etapas em grupo, minha principal função foi desenvolver a nova identidade visual, traduzindo elegância, transformação e exclusividade em cada detalhe do design.",
+                challenges: "Um dos principais desafios enfrentados foi a falta de contato direto com o cliente. Devido à distância e à rotina atribulada da proprietária, não era possível realizar visitas presenciais à loja, o que dificultava o alinhamento de informações e o entendimento mais profundo da marca. Essa limitação exigiu que a equipe buscasse uma forma eficiente de comunicação, garantindo que as decisões de design e estratégia estivessem sempre de acordo com as expectativas da cliente.",
+                solution: "Para contornar os problemas de comunicação, adotamos uma estratégia de intermediação, escolhendo uma pessoa da equipe como canal direto com a cliente. Assim, todas as perguntas, revisões e retornos passavam por esse contato central, otimizando o tempo e evitando desencontros de informação. As dúvidas eram reunidas ao longo da semana e tratadas em reuniões específicas, o que tornou o processo mais fluido e organizado. Essa abordagem trouxe clareza e facilitou as tomadas de decisão durante o desenvolvimento da identidade visual.",
+                result: "O resultado foi extremamente satisfatório. A nova identidade visual da Boutiquey conseguiu equilibrar o símbolo da borboleta — representando transformação e elegância — com uma estética moderna e luxuosa, adequada ao posicionamento desejado pela marca. O projeto foi apresentado em um auditório para a equipe e convidados, recebendo excelente repercussão e aprovação. Muitos colegas e avaliadores destacaram o cuidado com os detalhes e a coerência entre conceito e execução. Além disso, foi muito gratificante ver pessoas se aproximando após a apresentação para elogiar o trabalho e tirar dúvidas sobre o processo criativo, reforçando a relevância e o impacto do projeto.",
+                gallery: boutiqueyGallery, isSecondary: false
+            }
+        };
+
+        const row1Projects = [
+            { id: '2', title: 'Minha Fauna', img: minhaFaunaGallery[0], gallery: minhaFaunaGallery, briefing: "Foi um projeto acadêmico que consistiu na criação de uma logomarca tipográfica para um evento cultural, desenvolvida sem o uso de ícones." },
+            { id: '1', title: 'Time Rush', img: timeRushGallery[0], gallery: timeRushGallery },
+            { id: '3', title: 'Diagramações', img: diagramacoesGallery[0], gallery: diagramacoesGallery, category: "Diagramações", briefing: "Este tópico apresenta projetos de diagramação de e-books, explorando composição visual, hierarquia tipográfica e organização de conteúdo para uma leitura envolvente e funcional." },
+            { id: '4', title: 'Banners', img: bannersGallery[0], gallery: bannersGallery, category: "Design comunicacional", briefing: "Este tópico reúne criações de banners promocionais desenvolvidos para campanhas públicas, destacando o uso estratégico de cores, tipografia e composição para atrair e engajar o público." }
+        ];
+
+        const row2Projects = [
+            { id: '4b', title: 'Banners', img: bannersGallery[0], gallery: bannersGallery, category: "Design comunicacional", briefing: "Este tópico reúne criações de banners promocionais desenvolvidos para campanhas públicas, destacando o uso estratégico de cores, tipografia e composição para atrair e engajar o público." },
+            { id: '3b', title: 'Diagramações', img: diagramacoesGallery[0], gallery: diagramacoesGallery, category: "Diagramações", briefing: "Este tópico apresenta projetos de diagramação de e-books, explorando composição visual, hierarquia tipográfica e organização de conteúdo para uma leitura envolvente e funcional." },
+            { id: '1b', title: 'Time Rush', img: timeRushGallery[0], gallery: timeRushGallery },
+            { id: '2b', title: 'Minha Fauna', img: minhaFaunaGallery[0], gallery: minhaFaunaGallery, briefing: "Foi um projeto acadêmico que consistiu na criação de uma logomarca tipográfica para um evento cultural, desenvolvida sem o uso de ícones." }
+        ];
+
+        // --- FUNÇÕES GLOBAIS (Replicando Lógica React) ---
+        
+        function handleImageLoad(img) {
+            img.classList.remove('opacity-0');
+            img.classList.add('opacity-100');
+            // Remove o scanner div
+            const loader = img.previousElementSibling;
+            if (loader && loader.classList.contains('image-loader-bg')) {
+                loader.style.display = 'none';
+            }
+        }
+
+        function handleImageError(e) {
+            e.target.onerror = null; 
+            e.target.src = "https://images.unsplash.com/photo-1634942550632-503df7749544?w=800&q=80";
+            handleImageLoad(e.target);
+        }
+
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.remove('hidden');
+            // Timeout para transição suave
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                lightbox.classList.add('opacity-100');
+                lightboxImg.classList.remove('scale-95');
+                lightboxImg.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightbox.classList.remove('opacity-100');
+            lightbox.classList.add('opacity-0');
+            lightboxImg.classList.remove('scale-100');
+            lightboxImg.classList.add('scale-95');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+            }, 300);
+        }
+
+        // Componente de Imagem com Scanner reconstruído como string HTML
+        function renderImageWithLoaderHTML(src, alt, className, clickHandler = '') {
+            return `
+                <div class="image-loader-bg absolute inset-0 z-0 bg-slate-100/30 overflow-hidden pointer-events-none rounded-[inherit]">
+                    <div class="w-full h-full" style="animation: scanDownWrapper 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite">
+                        <div class="w-full h-[1px] opacity-70" style="background: linear-gradient(90deg, transparent 0%, rgba(0,122,255,1) 30%, rgba(255,45,85,1) 70%, transparent 100%); box-shadow: 0 0 12px rgba(0,122,255,0.4); animation: subtleColorCycle 4s linear infinite"></div>
+                    </div>
+                </div>
+                <img src="${src}" alt="${alt}" class="${className} opacity-0 transition-all duration-500" onload="handleImageLoad(this)" onerror="handleImageError(event)" ${clickHandler ? `onclick="${clickHandler}"` : ''} style="position: relative; z-index: 1;" />
+            `;
+        }
+
+        // --- SISTEMA DE NAVEGAÇÃO / RENDERIZAÇÃO ---
+        function openProject(projectId, isSecondaryObj = null) {
+            const proj = isSecondaryObj ? isSecondaryObj : projectsData[projectId];
+            if (!proj) return;
+
+            document.getElementById('home-view').classList.add('hidden');
+            const projectView = document.getElementById('project-view');
+            projectView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Layout WindowCard Base
+            const WindowCardHeader = `
+                <div class="bg-slate-50/80 px-4 md:px-6 lg:px-8 py-3 md:py-4 lg:py-5 flex items-center border-b border-blue-100/50 shrink-0">
+                    <div class="flex space-x-2.5">
+                        <div class="w-2.5 md:w-3.5 h-2.5 md:h-3.5 rounded-full bg-red-400"></div><div class="w-2.5 md:w-3.5 h-2.5 md:h-3.5 rounded-full bg-yellow-400"></div><div class="w-2.5 md:w-3.5 h-2.5 md:h-3.5 rounded-full bg-green-400"></div>
+                    </div>
+                </div>`;
+
+            let htmlContent = `
+                <button onclick="closeProject()" class="inline-flex items-center space-x-2 text-slate-500 hover:text-blue-600 font-bold transition-colors bg-white hover:bg-blue-50 px-6 py-3 rounded-full shadow-sm mb-4">
+                    <span>Voltar ao Portfólio</span>
+                </button>
+            `;
+
+            if (!proj.isSecondary) {
+                // Layout de Projetos Principais
+                let galleryMarquee = '';
+                [...proj.gallery, ...proj.gallery].forEach((imgUrl, idx) => {
+                    galleryMarquee += `
+                        <div onclick="openLightbox('${imgUrl}')" class="relative w-[75vw] sm:w-[350px] md:w-[450px] lg:w-[500px] 2xl:w-[650px] h-[350px] md:h-[450px] 2xl:h-[550px] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg border border-slate-100 flex-shrink-0 group cursor-zoom-in bg-slate-50 mx-2 sm:mx-4">
+                            ${renderImageWithLoaderHTML(imgUrl, `Galeria ${idx}`, 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110')}
+                        </div>`;
+                });
+
+                htmlContent += `
+                    <div class="fade-in-section">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                            ${WindowCardHeader}
+                            <div class="p-0 flex-1 relative flex flex-col">
+                                <div class="relative h-[50vh] md:h-[60vh] min-h-[400px] w-full cursor-zoom-in group" onclick="openLightbox('${proj.heroImg}')">
+                                    ${renderImageWithLoaderHTML(proj.heroImg, proj.title, 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105')}
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex flex-col justify-end p-6 sm:p-10 md:p-14 lg:p-20 z-10 pointer-events-none">
+                                        <div class="inline-block px-3 md:px-4 py-1.5 md:py-2 bg-blue-600/90 text-white font-bold text-xs md:text-sm rounded-full mb-4 w-max backdrop-blur-sm">${proj.category}</div>
+                                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 md:mb-8 drop-shadow-md leading-[1.1]">${proj.title}</h1>
+                                        <div class="flex flex-wrap gap-6 md:space-x-12 mt-2 md:mt-4 pt-6 md:pt-10 border-t border-white/20">
+                                            <div><p class="text-[10px] md:text-xs font-bold text-slate-300 uppercase tracking-wider mb-1 md:mb-2">Meu Papel</p><p class="font-medium text-white text-base md:text-lg">${proj.role}</p></div>
+                                            <div><p class="text-[10px] md:text-xs font-bold text-slate-300 uppercase tracking-wider mb-1 md:mb-2">Duração</p><p class="font-medium text-white text-base md:text-lg">${proj.timeline}</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-section">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                            ${WindowCardHeader}
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-24 flex-1 relative">
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 md:mb-8 tracking-tight">Briefing Estratégico</h2>
+                                <p class="text-lg md:text-xl 2xl:text-2xl text-slate-600 leading-[1.7] md:leading-[1.8] whitespace-pre-line mb-4">${proj.briefing}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                        <div class="fade-in-section h-full">
+                            <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col h-full">
+                                ${WindowCardHeader}
+                                <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-24 flex-1 relative">
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 md:mb-8 tracking-tight">Análise de Desafios</h2>
+                                    <p class="text-base md:text-lg 2xl:text-xl text-slate-600 leading-[1.7] md:leading-[1.8] mb-4">${proj.challenges}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fade-in-section h-full" style="transition-delay: 100ms;">
+                            <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col h-full">
+                                ${WindowCardHeader}
+                                <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-24 flex-1 relative">
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 md:mb-8 tracking-tight">Execução da Solução</h2>
+                                    <p class="text-base md:text-lg 2xl:text-xl text-slate-600 leading-[1.7] md:leading-[1.8] mb-4">${proj.solution}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-section">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                            ${WindowCardHeader}
+                            <div class="p-6 sm:p-10 md:p-14 lg:p-20 2xl:p-24 flex-1 relative">
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 md:mb-8 tracking-tight">Impacto & Resultados</h2>
+                                <p class="text-lg md:text-xl 2xl:text-2xl text-slate-600 leading-[1.7] md:leading-[1.8] whitespace-pre-line mb-4">${proj.result}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-section">
+                        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col">
+                            ${WindowCardHeader}
+                            <div class="pt-8 md:pt-14 lg:pt-20 px-0 pb-12 flex-1 relative">
+                                <div class="mb-8 md:mb-10 px-6 sm:px-10 md:px-14 lg:px-20">
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-3 md:mb-4 tracking-tight">Assets Visuais</h2>
+                                    <p class="text-slate-500 text-base md:text-lg 2xl:text-xl">Clique para explorar os detalhes em alta resolução.</p>
+                                </div>
+                                <div class="flex overflow-hidden relative pause-on-hover py-4">
+                                    <div class="flex project-marquee-left">
+                                        ${galleryMarquee}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Layout Secundário (Carrossel Projects)
+                let scrollUpHTML = '';
+                let scrollDownHTML = '';
+                [...proj.gallery, ...proj.gallery, ...proj.gallery].forEach((imgUrl) => {
+                    scrollUpHTML += `
+                        <div onclick="openLightbox('${imgUrl}')" class="aspect-[4/5] relative rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 group cursor-zoom-in shrink-0 bg-white">
+                            ${renderImageWithLoaderHTML(imgUrl, 'Visual', 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110')}
+                            <div class="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors duration-300 z-10 pointer-events-none"></div>
+                        </div>`;
+                });
+                [...proj.gallery, ...proj.gallery, ...proj.gallery].reverse().forEach((imgUrl) => {
+                    scrollDownHTML += `
+                        <div onclick="openLightbox('${imgUrl}')" class="aspect-[4/5] relative rounded-[1.5rem] md:rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 group cursor-zoom-in shrink-0 bg-white">
+                            ${renderImageWithLoaderHTML(imgUrl, 'Visual', 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110')}
+                            <div class="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors duration-300 z-10 pointer-events-none"></div>
+                        </div>`;
+                });
+
+                htmlContent += `
+                    <div class="grid grid-cols-12 gap-3 sm:gap-6 md:gap-12 items-stretch min-h-0">
+                        <div class="col-span-7 sm:col-span-5 lg:col-span-5 flex flex-col h-full">
+                            <div class="fade-in-section h-full flex flex-col">
+                                <div class="bg-white rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 overflow-hidden border border-blue-50 flex flex-col h-full flex-1">
+                                    ${WindowCardHeader}
+                                    <div class="p-4 sm:p-8 md:p-10 lg:p-16 2xl:p-20 flex-1 relative flex flex-col justify-center">
+                                        <div class="mb-4 md:mb-8 lg:mb-10">
+                                            <div class="inline-block px-2 md:px-3 py-1 md:py-1.5 bg-blue-100 text-blue-700 font-bold text-[10px] md:text-sm rounded-full mb-2 md:mb-4 lg:mb-5">${proj.category}</div>
+                                            <h1 class="text-xl sm:text-3xl md:text-4xl 2xl:text-5xl font-black text-slate-900 mb-2 md:mb-3 tracking-tight leading-tight">${proj.title}</h1>
+                                            <div class="h-1 md:h-1.5 w-10 md:w-16 bg-blue-600 rounded-full"></div>
+                                        </div>
+                                        <div class="space-y-4 md:space-y-6 lg:space-y-8">
+                                            <div>
+                                                <h2 class="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-3 lg:mb-4">Resumo do Caso</h2>
+                                                <p class="text-slate-600 leading-[1.5] md:leading-[1.7] lg:leading-[1.8] text-xs sm:text-sm md:text-lg lg:text-xl italic whitespace-pre-line mb-2 md:mb-4">"${proj.briefing}"</p>
+                                            </div>
+                                            <div class="pt-3 md:pt-6 lg:pt-8 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 lg:gap-6">
+                                                <div><p class="text-[9px] md:text-xs font-black text-slate-300 uppercase tracking-wider mb-0.5 md:mb-1 lg:mb-2">Papel</p><p class="text-xs sm:text-sm 2xl:text-base font-bold text-slate-600">${proj.role}</p></div>
+                                                <div><p class="text-[9px] md:text-xs font-black text-slate-300 uppercase tracking-wider mb-0.5 md:mb-1 lg:mb-2">Status</p><p class="text-xs sm:text-sm 2xl:text-base font-bold text-slate-600">${proj.timeline}</p></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-5 sm:col-span-7 lg:col-span-7 relative h-[60vh] md:h-[70vh] lg:h-auto min-h-[400px] md:min-h-[500px]">
+                            <div class="absolute inset-0 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 shadow-inner bg-slate-50/50 pause-on-hover">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 p-3 md:p-6 h-full">
+                                    <div class="relative flex flex-col gap-4 md:gap-8 animate-scroll-up">${scrollUpHTML}</div>
+                                    <div class="relative hidden md:flex flex-col gap-4 md:gap-8 animate-scroll-down">${scrollDownHTML}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            htmlContent += `
+                <div class="fade-in-section">
+                    <div class="text-center py-12 md:py-16">
+                        <h3 class="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 mb-6 md:mb-8 tracking-tight">Interessado neste processo criativo?</h3>
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lurocharios@gmail.com" target="_blank" class="inline-flex items-center space-x-3 bg-blue-600 text-white font-bold px-8 md:px-10 py-4 md:py-5 rounded-full hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-lg shadow-blue-600/20">
+                            <span class="text-base md:text-lg">Solicitar Proposta</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            projectView.innerHTML = htmlContent;
+            initFadeInObservers(); // Reativa observer para novos elementos injetados
+        }
+
+        function closeProject() {
+            document.getElementById('project-view').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            initFadeInObservers(); // Reinicia visibilidade se necessário
+        }
+
+        window.handleSelectCarouselProject = function(isRow2, index) {
+            const proj = isRow2 ? row2Projects[index] : row1Projects[index];
+            const detailedProj = {
+                title: proj.title,
+                category: proj.category || "Branding",
+                heroImg: proj.img,
+                role: proj.role || "Design Artístico",
+                timeline: proj.timeline || "Case de Exploração",
+                briefing: proj.briefing || `foi uma agência fictícia desenvolvida para um projeto acadêmico, criada com o objetivo de simular processos reais de atendimento, branding e estratégia.`,
+                isSecondary: true,
+                gallery: proj.gallery || []
+            };
+            openProject(null, detailedProj);
+        };
+
+        // --- INICIALIZAÇÃO E EFEITOS DOM ---
+        function renderCarouselCard(proj, isRow2, index) {
+            return `
+                <div onclick="handleSelectCarouselProject(${isRow2}, ${index})" class="relative w-[70vw] sm:w-[280px] md:w-[320px] lg:w-[400px] 2xl:w-[450px] h-[200px] md:h-[220px] lg:h-[280px] 2xl:h-[320px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group/card flex-shrink-0 shadow-lg border border-slate-100 cursor-pointer mx-3 sm:mx-4">
+                    ${renderImageWithLoaderHTML(proj.img, proj.title, 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110')}
+                    <div class="absolute inset-0 bg-blue-900/70 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px] z-20">
+                        <div class="text-center transform translate-y-6 group-hover/card:translate-y-0 transition-transform duration-300">
+                            <h4 class="text-white text-xl sm:text-2xl font-black mb-2 md:mb-3">${proj.title}</h4>
+                            <span class="inline-block px-4 md:px-5 py-2 md:py-2.5 bg-white/20 text-white text-xs md:text-sm font-bold rounded-full backdrop-blur-md">Ver Detalhes</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let fadeObserver = null;
+        function initFadeInObservers() {
+            if(fadeObserver) fadeObserver.disconnect();
+            
+            fadeObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+            const elements = document.querySelectorAll('.fade-in-section');
+            elements.forEach(el => {
+                // Remove visível (para resets se necessário) e adiciona ao observer
+                if(!el.classList.contains('is-visible')) {
+                    fadeObserver.observe(el);
+                }
+            });
+
+            // Fallback timeout como no React original
+            setTimeout(() => {
+                elements.forEach(el => el.classList.add('is-visible'));
+            }, 800);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Imagens Iniciais Fixas com `absolute inset-0` e `object-cover` para responsividade perfeita
+            document.getElementById('profile-pic-container').innerHTML = renderImageWithLoaderHTML(profilePic, "Lucas Rocha Rios", "absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 cursor-zoom-in", `openLightbox('${profilePic}')`);
+            
+            document.getElementById('revista-pg-img-container').innerHTML = renderImageWithLoaderHTML(revistaPgImages[0], "Revista PG", "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105", `openLightbox('${revistaPgImages[0]}')`);
+            
+            document.getElementById('spectro-img-container').innerHTML = renderImageWithLoaderHTML(spectroHomeImg, "Spectro", "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105", `openLightbox('${spectroHomeImg}')`);
+            
+            document.getElementById('boutiquey-img-container').innerHTML = renderImageWithLoaderHTML(boutiqueyHeroImg, "Boutiquey", "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105", `openLightbox('${boutiqueyHeroImg}')`);
+
+            // Setup Carrossel
+            const carouselRow1 = document.getElementById('carousel-row-1');
+            const carouselRow2 = document.getElementById('carousel-row-2');
+            
+            let htmlRow1 = '';
+            [...row1Projects, ...row1Projects].forEach((proj, i) => {
+                // i % row1Projects.length para garantir o index original do array
+                htmlRow1 += renderCarouselCard(proj, false, i % row1Projects.length); 
+            });
+            carouselRow1.innerHTML = htmlRow1;
+
+            let htmlRow2 = '';
+            [...row2Projects, ...row2Projects].forEach((proj, i) => {
+                htmlRow2 += renderCarouselCard(proj, true, i % row2Projects.length);
+            });
+            carouselRow2.innerHTML = htmlRow2;
+
+            document.getElementById('copyright-year').innerText = `© ${new Date().getFullYear()} Lucas Rocha Rios.`;
+
+            // Inicializa Efeitos de Scroll
+            initFadeInObservers();
+        });
+
+    </script>
+</body>
+</html>
